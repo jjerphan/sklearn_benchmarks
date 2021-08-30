@@ -1,0 +1,13 @@
+numpy
+pandas
+plotly
+ipython
+click
+joblib
+scikit-learn
+threadpoolctl
+onnxruntime
+skl2onnx==1.8.0
+viztracer
+pyyaml
+jupyter

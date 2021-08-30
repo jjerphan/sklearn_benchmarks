@@ -137,22 +137,15 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-*.csv
-
-*.txt
-
-tmp
-
-.vscode
-
-*.sh
-
-*.json.gz
-
-wip.ipynb
-
-*.onnx
-*.html
-result.json
-
+# Generated static files
+results/**/*.csv
+results/profiling/*.html
+results/profiling/*.json.gz
+results/*.txt
 results/*.yml
+
+# Joblib cache directory
+tmp/
+
+# VSCode config
+.vscode
