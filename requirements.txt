@@ -11,3 +11,4 @@ skl2onnx
 viztracer
 pyyaml
 jupyter
+Pygments==2.6.1
