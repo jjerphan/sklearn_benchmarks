@@ -45,10 +45,10 @@ jobs:
           export OPENBLAS_NUM_THREADS=$NUM_CORES
 
       - name: Run benchmark suite
-        run: python -m sklearn_benchmarks --config config.yml --run_profiling --fast
+        run: python -m sklearn_benchmarks --config config.yml --run_profiling
 
-      # - name: Run test suite
-      #   run: pytest sklearn_benchmarks/tests
+      - name: Run test suite
+        run: pytest sklearn_benchmarks/tests
 
       - name: Copy configuration file in results folder
         run: cp config.yml ./results
