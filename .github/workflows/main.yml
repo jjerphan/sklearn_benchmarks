@@ -33,7 +33,7 @@ jobs:
       - name: Install specific dependencies
         run: |
           pip install pytest lightgbm xgboost catboost scikit-learn-intelex
-          pip install --pre --extra-index https://pypi.anaconda.org/scipy-wheels-nightly/simple scikit-learn
+          pip install --pre --extra-index https://pypi.anaconda.org/scipy-wheels-nightly/simple scikit-learn --upgrade
 
       - name: Set config vars for parallelism
         run: |

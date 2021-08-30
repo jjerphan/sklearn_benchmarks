@@ -7,7 +7,7 @@ joblib
 scikit-learn
 threadpoolctl
 onnxruntime
-skl2onnx==1.8.0
+skl2onnx
 viztracer
 pyyaml
 jupyter
