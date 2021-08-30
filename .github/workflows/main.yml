@@ -27,15 +27,17 @@ jobs:
           key: ${{ runner.os }}-pip-${{ env.CACHE_NUMBER }}-${{
             hashFiles('requirements.txt') }}
 
-      - name: Install specific dependencies
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.8
+          mamba-version: "*"
+          channels: conda-forge,intel
+          channel-priority: flexible
+          use-only-tar-bz2: true
+
+      - shell: bash -l {0}
         run: |
-          pip install --pre --extra-index https://pypi.anaconda.org/scipy-wheels-nightly/simple scikit-learn
-          pip install conda
-          conda install -c conda-forge pytest
-          conda install -c conda-forge lightgbm
-          conda install -c conda-forge xgboost
-          conda install -c conda-forge catboost
-          conda install -c conda-forge scikit-learn-intelex
+          mamba install -c conda-forge pytest lightgbm xgboost catboost scikit-learn-intelex
 
       - name: Set config vars for parallelism
         run: |
