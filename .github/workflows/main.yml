@@ -20,24 +20,20 @@ jobs:
 
       - name: Cache pip
         uses: actions/cache@v2
-        env:
-          CACHE_NUMBER: 0
         with:
-          path: ~/conda_pkgs_dir
-          key: ${{ runner.os }}-pip-${{ env.CACHE_NUMBER }}-${{
-            hashFiles('requirements.txt') }}
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
 
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          python-version: 3.8
-          mamba-version: "*"
-          channels: conda-forge,intel
-          channel-priority: flexible
-          use-only-tar-bz2: true
+      - name: Install minimal dependencies
+        run: pip install -r requirements.txt
 
-      - shell: bash -l {0}
+      - name: Install specific dependencies
         run: |
-          mamba install -c conda-forge pytest lightgbm xgboost catboost scikit-learn-intelex
+          pip install pytest lightgbm xgboost catboost scikit-learn-intelex
+          pip install --pre --extra-index https://pypi.anaconda.org/scipy-wheels-nightly/simple scikit-learn
 
       - name: Set config vars for parallelism
         run: |
