@@ -28,7 +28,9 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install minimal dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install --upgrade protobuf
 
       - name: Install specific dependencies
         run: |
