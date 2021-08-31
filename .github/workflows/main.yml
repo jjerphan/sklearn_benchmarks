@@ -45,38 +45,38 @@ jobs:
           export OPENBLAS_NUM_THREADS=$NUM_CORES
 
       - name: Run benchmark suite
-        run: python -m sklearn_benchmarks --config config.yml --run_profiling
+        run: python -m sklearn_benchmarks --config config.yml --run_profiling -- estimator KNeighborsClassifier_kd_tree
 
-      - name: Run test suite
-        run: pytest sklearn_benchmarks/tests
+      # - name: Run test suite
+      #   run: pytest sklearn_benchmarks/tests
 
-      - name: Copy configuration file in results folder
-        run: cp config.yml ./results
+      # - name: Copy configuration file in results folder
+      #   run: cp config.yml ./results
 
-      - name: Remove profiling files above 100mb
-        run: python scripts/remove_heavy_files.py
+      # - name: Remove profiling files above 100mb
+      #   run: python scripts/remove_heavy_files.py
 
-      - name: Upload benchmark results
-        uses: actions/upload-artifact@v2
-        with:
-          name: results
-          path: results
+      # - name: Upload benchmark results
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: results
+      #     path: results
 
-      - name: Convert notebook to html
-        run: |
-          jupyter nbconvert --to html --execute --output results/index.html index.ipynb
-          jupyter nbconvert --to html --execute --output results/scikit_learn_intelex_vs_scikit_learn.html scikit_learn_intelex_vs_scikit_learn.ipynb
-          jupyter nbconvert --to html --execute --output results/onnx_vs_scikit_learn.html onnx_vs_scikit_learn.ipynb
-          jupyter nbconvert --to html --execute --output results/gradient_boosting.html gradient_boosting.ipynb
+      # - name: Convert notebook to html
+      #   run: |
+      #     jupyter nbconvert --to html --execute --output results/index.html index.ipynb
+      #     jupyter nbconvert --to html --execute --output results/scikit_learn_intelex_vs_scikit_learn.html scikit_learn_intelex_vs_scikit_learn.ipynb
+      #     jupyter nbconvert --to html --execute --output results/onnx_vs_scikit_learn.html onnx_vs_scikit_learn.ipynb
+      #     jupyter nbconvert --to html --execute --output results/gradient_boosting.html gradient_boosting.ipynb
 
-      - name: Download docs folder
-        uses: actions/download-artifact@v2
-        with:
-          name: results
-          path: results
+      # - name: Download docs folder
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: results
+      #     path: results
 
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@4.1.1
-        with:
-          branch: gh-pages
-          folder: results
+      # - name: Deploy
+      #   uses: JamesIves/github-pages-deploy-action@4.1.1
+      #   with:
+      #     branch: gh-pages
+      #     folder: results
