@@ -67,7 +67,7 @@ def run_benchmark_one_func(
     """
     if run_profiling:
         # First run with a profiler (not timed)
-        with VizTracer(max_stack_depth=10, verbose=0) as tracer:
+        with VizTracer(verbose=0) as tracer:
             tracer.start()
             if y is not None:
                 func_result = func(X, y, **kwargs)
