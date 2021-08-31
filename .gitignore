@@ -155,3 +155,6 @@ dask-worker-space/
 
 # Developement environment setup script
 dev_setup.sh
+
+# ONNX models
+*.onnx
