@@ -45,7 +45,7 @@ jobs:
           export OPENBLAS_NUM_THREADS=$NUM_CORES
 
       - name: Run benchmark suite
-        run: python -m sklearn_benchmarks --config config.yml --run_profiling -- estimator KNeighborsClassifier_kd_tree
+        run: python -m sklearn_benchmarks --config config.yml --run_profiling --estimator KNeighborsClassifier_kd_tree
 
       # - name: Run test suite
       #   run: pytest sklearn_benchmarks/tests
