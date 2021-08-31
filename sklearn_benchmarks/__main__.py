@@ -137,7 +137,6 @@ def main(
         }
 
     random_seed = benchmarking_config.get("random_seed", None)
-    random_state = check_random_state(random_seed)
 
     time_report = pd.DataFrame(
         columns=["estimator", "benchmarking_method", "hour", "min", "sec"]
@@ -197,7 +196,7 @@ def main(
 
         params = parse_parameters(params)
 
-        params["random_state"] = random_state
+        params["random_state"] = check_random_state(random_seed)
         params["run_profiling"] = run_profiling
 
         # When fast option is enabled, all benchmarks will be HPO benchmarks, meaning we will not explore the whole grid and stop when time limit is reached.
