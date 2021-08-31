@@ -201,7 +201,7 @@ def clean_results():
     Remove static files generated during benchmarks.
     """
 
-    extensions = [".csv", ".html", ".json.gz", ".txt"]
+    extensions = [".csv", ".html", ".json.gz", ".txt", ".err", ".out"]
     files = []
     for extension in extensions:
         files_path = str(RESULTS_PATH / "**/*") + extension

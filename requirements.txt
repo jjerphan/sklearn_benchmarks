@@ -11,3 +11,5 @@ skl2onnx
 viztracer
 pyyaml
 jupyter
+dask
+dask-jobqueue

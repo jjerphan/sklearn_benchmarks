@@ -10,17 +10,22 @@ from pathlib import Path
 import click
 import joblib
 import pandas as pd
+from dask.distributed import Client
+from dask_jobqueue import SLURMCluster
 from sklearn.utils import check_random_state
 from sklearn.utils._show_versions import _get_deps_info, _get_sys_info
 from threadpoolctl import threadpool_info
 
 from sklearn_benchmarks.benchmarking import Benchmark
 from sklearn_benchmarks.config import (
-    BENCHMARKING_RESULTS_PATH,
-    PROFILING_RESULTS_PATH,
     BENCH_LIBS,
+    BENCHMARKING_RESULTS_PATH,
+    DASK_LOG_DIR,
     DEFAULT_CONFIG,
     ENV_INFO_PATH,
+    PROFILING_RESULTS_PATH,
+    SLURM_ENV_EXTRA,
+    SLURM_QUEUE,
     TIME_LAST_RUN_PATH,
     TIME_REPORT_PATH,
     VERSIONS_PATH,
@@ -31,6 +36,14 @@ from sklearn_benchmarks.utils import clean_results, convert
 
 
 @click.command()
+@click.option(
+    "--distributed",
+    "--d",
+    is_flag=True,
+    required=False,
+    default=False,
+    help="Run distributed benchmarks on SLURM cluster.",
+)
 @click.option(
     "--append",
     "--a",
@@ -75,6 +88,13 @@ from sklearn_benchmarks.utils import clean_results, convert
     help="Estimator to benchmark.",
 )
 @click.option(
+    "--benchmarking_method",
+    "--bm",
+    type=str,
+    multiple=True,
+    help="Select estimators by benchmarking methods.",
+)
+@click.option(
     "--hpo_time_budget",
     "--htb",
     type=int,
@@ -82,11 +102,13 @@ from sklearn_benchmarks.utils import clean_results, convert
     help="Custom time budget for HPO benchmarks in seconds. Will be applied for all libraries.",
 )
 def main(
+    distributed,
     append,
     run_profiling,
     fast,
     config,
     estimator,
+    benchmarking_method,
     hpo_time_budget,
 ):
     """
@@ -104,7 +126,15 @@ def main(
     all_estimators = benchmarking_config["estimators"]
     selected_estimators = all_estimators
     if estimator:
-        selected_estimators = {k: all_estimators[k] for k in estimator}
+        selected_estimators = {k: selected_estimators[k] for k in estimator}
+
+    if benchmarking_method:
+        selected_estimators = {
+            e: p
+            for e, p in selected_estimators.items()
+            if "benchmarking_method" in p
+            and p["benchmarking_method"] in benchmarking_method
+        }
 
     random_seed = benchmarking_config.get("random_seed", None)
     random_state = check_random_state(random_seed)
@@ -112,8 +142,25 @@ def main(
     time_report = pd.DataFrame(
         columns=["estimator", "benchmarking_method", "hour", "min", "sec"]
     )
-    t0 = time.perf_counter()
 
+    if distributed:
+        cluster = SLURMCluster(
+            queue=SLURM_QUEUE,
+            env_extra=SLURM_ENV_EXTRA,
+            cores=1,
+            processes=1,
+            memory="16GB",
+            log_directory=DASK_LOG_DIR,
+            silence_logs="info",
+        )
+
+        client = Client(cluster)
+
+        cluster.scale(jobs=1)
+
+    futures = []
+
+    t0 = time.perf_counter()
     for name, params in selected_estimators.items():
         # When inherit param is set, we fetch params from parent estimator
         if "inherit" in params:
@@ -163,10 +210,21 @@ def main(
         # Creates folder to store results if they don't exist.
         Path(BENCHMARKING_RESULTS_PATH).mkdir(parents=True, exist_ok=True)
         Path(PROFILING_RESULTS_PATH).mkdir(parents=True, exist_ok=True)
+        if distributed:
+            Path(DASK_LOG_DIR).mkdir(parents=True, exist_ok=True)
 
         benchmark = Benchmark(**params)
         start_benchmark = time.perf_counter()
-        benchmark.run()
+        if distributed:
+            future = client.submit(benchmark.run)
+            while True:
+                print(f"{name} benchmark running...")
+                time.sleep(1)
+                if future.done():
+                    break
+            futures.append(future)
+        else:
+            benchmark.run()
         end_benchmark = time.perf_counter()
 
         time_report.loc[len(time_report)] = [
@@ -183,6 +241,12 @@ def main(
         mode="w+",
         index=False,
     )
+
+    if distributed:
+        for future in futures:
+            future.result()
+
+        cluster.scale(0)
 
     # Store bench libs versions
     versions = {}

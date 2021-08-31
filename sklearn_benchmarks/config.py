@@ -10,6 +10,7 @@ else:
     RESULTS_PATH = Path(RESULTS_PATH)
 PROFILING_RESULTS_PATH = RESULTS_PATH / "profiling"
 BENCHMARKING_RESULTS_PATH = RESULTS_PATH / "benchmarking"
+DASK_LOG_DIR = RESULTS_PATH / "dask_distributed_logs"
 TIME_REPORT_PATH = RESULTS_PATH / "time_report.csv"
 ENV_INFO_PATH = RESULTS_PATH / "env_info.txt"
 VERSIONS_PATH = RESULTS_PATH / "versions.txt"
@@ -62,6 +63,12 @@ PLOTLY_COLORS_TO_FILLCOLORS = dict(
     purple="rgba(178, 0, 255, 0.1)",
     orange="rgba(255, 153, 0, 0.1)",
 )
+
+SLURM_QUEUE = "normal,parietal"
+SLURM_ENV_EXTRA = [
+    "source /scratch/mbatoul/miniconda3/etc/profile.d/conda.sh",
+    "conda activate sklbench",
+]
 
 
 def get_full_config(config=DEFAULT_CONFIG):
