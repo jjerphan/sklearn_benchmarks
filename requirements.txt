@@ -13,3 +13,4 @@ pyyaml
 jupyter
 dask
 dask-jobqueue
+Pygments==2.6.1
