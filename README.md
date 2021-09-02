@@ -50,7 +50,7 @@ In order to setup the environment, you need to have `conda` installed. See instr
 To get a local copy up and running follow these simple example steps:
 
 ```sh
-$ git clone https://github.com/mbatoul/sklearn_benchmarks
+$ git clone -b master --single-branch https://github.com/mbatoul/sklearn_benchmarks
 $ cd sklearn_benchmarks
 $ conda env create --file environment.yml
 $ conda activate sklbench
