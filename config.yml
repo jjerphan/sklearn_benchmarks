@@ -63,7 +63,6 @@ benchmarking:
       name: KNeighborsClassifier_kd_tree
       estimator: sklearn.neighbors.KNeighborsClassifier
       benchmarking_method: hp_match
-      predict_with_onnx: True
       parameters:
         init:
           n_neighbors:
