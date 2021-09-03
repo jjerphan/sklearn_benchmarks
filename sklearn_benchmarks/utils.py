@@ -13,6 +13,7 @@ from joblib import Memory
 from sklearn_benchmarks.config import (
     COMPARABLE_COLS,
     ENV_INFO_PATH,
+    GITHUB_BASE_URL,
     JOBLIB_CACHEDIR,
     JOBLIB_VERBOSE,
     NOTEBOOKS_TITLES,
@@ -315,8 +316,8 @@ def make_link_to_config_file(config_file_name):
     """
     Return a link to configuration file.
     """
-    base_url = "https://github.com/mbatoul/sklearn_benchmarks/"
-    full_link = f"{base_url}blob/gh-pages/{config_file_name}"
+
+    full_link = f"{GITHUB_BASE_URL}blob/gh-pages/{config_file_name}"
 
     return full_link
 
