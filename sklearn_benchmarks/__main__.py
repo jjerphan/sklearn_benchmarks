@@ -112,13 +112,6 @@ def main(
     Run the benchmarks for all estimators specified in the configuration file.
     """
 
-    # Store bench libs versions
-    versions = {}
-    for lib in BENCH_LIBS:
-        versions[lib] = version(lib)
-    with open(VERSIONS_PATH, "w") as outfile:
-        json.dump(versions, outfile)
-
     # Store bench environment information
     environment_information = {}
     environment_information["system"] = _get_sys_info()
@@ -127,6 +120,8 @@ def main(
     environment_information["cpu_count"] = joblib.cpu_count(only_physical_cores=True)
     with open(ENV_INFO_PATH, "w") as outfile:
         json.dump(environment_information, outfile)
+
+    save_libraries_version()
 
     # Store current time
     with open(TIME_LAST_RUN_PATH, "w") as outfile:
@@ -230,12 +225,6 @@ def main(
             Path(DASK_LOG_DIR).mkdir(parents=True, exist_ok=True)
 
         benchmark = Benchmark(**params)
-
-        # Early saving bench libs versions to still have information to report
-        # in case of interruption. This is performed here and at each iteration
-        # because new modules are dynamically loaded via Benchmarks initialisations,
-        # (previous statement).
-        save_libraries_version()
 
         start_benchmark = time.perf_counter()
         if distributed:
