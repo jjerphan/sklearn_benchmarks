@@ -54,7 +54,7 @@ COMPARABLE_COLS = [
 DIFF_SCORES_THRESHOLDS = {
     "accuracy_score": 0.001,
     "r2_score": 0.001,
-    "adjusted_rand_score": 0.001,
+    "adjusted_rand_score": 0.01,
 }
 PLOTLY_COLORS_TO_FILLCOLORS = dict(
     blue="rgba(0, 0, 255, 0.1)",
