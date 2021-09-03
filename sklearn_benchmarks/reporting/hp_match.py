@@ -493,6 +493,17 @@ class SingleEstimatorHpMatchReporting:
                 else:
                     string_chosen_thresholds += ", "
 
+            string_biggest_diff = f"The biggest difference{'s' if len(scores) > 1 else ''} {'are' if len(scores) > 1 else 'is'}"
+            for index, score in enumerate(scores):
+                biggest_diff = round(df_filtered[f"diff_{score}s"].max(), 3)
+                string_biggest_diff += (
+                    f" <strong>{biggest_diff}</strong> for <strong>{score}</strong>"
+                )
+                if index == len(scores) - 1:
+                    string_biggest_diff += "."
+                else:
+                    string_biggest_diff += ","
+
             display(Markdown("### Mismatches between validation scores"))
 
             display(
@@ -502,6 +513,7 @@ class SingleEstimatorHpMatchReporting:
                     f"Mismatch between validation scores for {n_mismatches} prediction{'s' if len(df_filtered) > 1 else ''} ({proportion_mismatches}%).<br>"
                     f"{string_observed_diffs}<br>"
                     f"{string_chosen_thresholds}<br>"
+                    f"{string_biggest_diff}<br>"
                     " See details in the dataframe below. "
                     "</div>"
                 )
