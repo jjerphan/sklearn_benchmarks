@@ -412,7 +412,7 @@ class HPOReporting:
 
         y_min = grid_scores.min()
         y_max = self.benchmark_results.max_grid_score
-        y_max += (y_max - y_min) * 0.1  # Add a little offset for readability.
+        y_max += (y_max - y_min) * 0.1  # Add a small offset for readability.
         fig.update_yaxes(range=[y_min, y_max])
 
         fig.update_layout(height=600, hovermode="closest")
