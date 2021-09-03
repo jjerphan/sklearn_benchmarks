@@ -252,6 +252,7 @@ class Benchmark:
     ):
         self.name = name
         self.estimator = estimator
+        self.EstimatorClass = dynamic_load(self.estimator)
         self.inherit = inherit
         self.metrics = metrics
         self.parameters = parameters
@@ -270,8 +271,7 @@ class Benchmark:
 
         init_parameters = self.parameters.get("init", {})
         if not init_parameters:
-            estimator_class = dynamic_load(self.estimator)
-            estimator = estimator_class()
+            estimator = self.EstimatorClass()
             # Parameters grid should have list values
             init_parameters = {k: [v] for k, v in estimator.__dict__.items()}
         grid = list(ParameterGrid(init_parameters))
@@ -285,7 +285,6 @@ class Benchmark:
         """
 
         library = self.estimator.split(".")[0]
-        estimator_class = dynamic_load(self.estimator)
         metrics = load_metrics(self.metrics)
         parameters_grid = self.make_parameters_grid()
         benchmark_results = RawBenchmarkResults()
@@ -323,7 +322,7 @@ class Benchmark:
                 )
 
                 for parameters_batch in parameters_grid:
-                    estimator = estimator_class(**parameters_batch)
+                    estimator = self.EstimatorClass(**parameters_batch)
                     set_random_state(estimator, random_state=self.random_state)
                     # Use digests to identify results later in reporting
                     parameters_digest = joblib.hash(parameters_batch)

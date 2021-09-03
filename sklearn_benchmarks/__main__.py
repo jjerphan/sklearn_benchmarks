@@ -4,7 +4,6 @@ The main entry point. Invoke as `sklearn_benchmarks' or `python -m sklearn_bench
 import json
 import time
 from datetime import datetime
-from importlib.metadata import version
 from pathlib import Path
 
 import click
@@ -18,7 +17,6 @@ from threadpoolctl import threadpool_info
 
 from sklearn_benchmarks.benchmarking import Benchmark
 from sklearn_benchmarks.config import (
-    BENCH_LIBS,
     BENCHMARKING_RESULTS_PATH,
     DASK_LOG_DIR,
     DEFAULT_CONFIG,
@@ -28,11 +26,10 @@ from sklearn_benchmarks.config import (
     SLURM_QUEUE,
     TIME_LAST_RUN_PATH,
     TIME_REPORT_PATH,
-    VERSIONS_PATH,
     get_full_config,
     parse_parameters,
 )
-from sklearn_benchmarks.utils import clean_results, convert
+from sklearn_benchmarks.utils import clean_results, convert, save_libraries_version
 
 
 @click.command()
@@ -213,6 +210,13 @@ def main(
             Path(DASK_LOG_DIR).mkdir(parents=True, exist_ok=True)
 
         benchmark = Benchmark(**params)
+
+        # Early saving bench libs versions to still have information to report
+        # in case of interruption. This is performed here and at each iteration
+        # because new modules are dynamically loaded via Benchmarks initialisations,
+        # (previous statement).
+        save_libraries_version()
+
         start_benchmark = time.perf_counter()
         if distributed:
             future = client.submit(benchmark.run)
@@ -246,13 +250,6 @@ def main(
             future.result()
 
         cluster.scale(0)
-
-    # Store bench libs versions
-    versions = {}
-    for lib in BENCH_LIBS:
-        versions[lib] = version(lib)
-    with open(VERSIONS_PATH, "w") as outfile:
-        json.dump(versions, outfile)
 
     # Store bench environment information
     environment_information = {}

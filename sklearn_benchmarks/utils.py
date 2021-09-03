@@ -3,14 +3,20 @@ import importlib
 import itertools
 import json
 import os
+import pathlib
 import re
+import warnings
 
 import numpy as np
 import pandas as pd
+
+from collections import defaultdict
+from importlib.metadata import version
 from IPython.display import Markdown, display
 from joblib import Memory
 
 from sklearn_benchmarks.config import (
+    BENCH_LIBS,
     COMPARABLE_COLS,
     ENV_INFO_PATH,
     GITHUB_BASE_URL,
@@ -20,6 +26,7 @@ from sklearn_benchmarks.config import (
     RESULTS_PATH,
     TIME_LAST_RUN_PATH,
     TIME_REPORT_PATH,
+    VERSIONS_PATH,
 )
 
 
@@ -285,6 +292,33 @@ def load_metrics(metrics):
 
     return [dynamic_load(f"sklearn.metrics.{metric}") for metric in metrics]
 
+
+def save_libraries_version(version_file: pathlib.PosixPath = VERSIONS_PATH,
+                           libraries: list = BENCH_LIBS):
+    """
+    Store libraries' version for reporting.
+    """
+    versions = {}
+    for lib in libraries:
+        versions[lib] = version(lib)
+    with open(version_file, "w") as outfile:
+        json.dump(versions, outfile)
+
+
+def load_libraries_version(version_file: pathlib.PosixPath = VERSIONS_PATH) -> dict:
+    """
+    Load libraries' version for reporting.
+
+    Returns a default dict of 'unkwown' values in case of missing keys.
+    """
+    versions = defaultdict(default_factory=lambda: 'unkwown')
+    try:
+        with open(version_file, "r") as json_dump:
+            versions.update(json.load(json_dump))
+    except FileNotFoundError:
+        warnings.warn(f"{version_file} specifying versions is not present.", RuntimeWarning)
+        pass
+    return versions
 
 def get_position(column):
     """

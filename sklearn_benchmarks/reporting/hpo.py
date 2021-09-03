@@ -21,6 +21,7 @@ from sklearn_benchmarks.utils import (
     find_index_nearest,
     get_library_full_name,
     is_pareto_optimal,
+    load_libraries_version,
     make_link_to_config_file,
 )
 
@@ -191,8 +192,7 @@ class HPOReporting:
         self.config = config["hpo_reporting"]
 
     def set_versions(self):
-        with open(VERSIONS_PATH) as json_file:
-            self.versions = json.load(json_file)
+        self.versions = load_libraries_version()
 
     def prepare_data(self):
         """

@@ -23,6 +23,7 @@ from sklearn_benchmarks.utils import (
     HoverTemplateMaker,
     generate_coordinates_grid,
     get_library_full_name,
+    load_libraries_version,
 )
 
 
@@ -137,8 +138,7 @@ class HpMatchReporting:
 
         benchmarking_estimators = config["benchmarking"]["estimators"]
 
-        with open(VERSIONS_PATH) as json_file:
-            versions = json.load(json_file)
+        versions = load_libraries_version()
 
         description = (
             "We assume here there is a perfect match between the hyperparameters of both librairies. "
