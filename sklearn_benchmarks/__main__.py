@@ -112,6 +112,26 @@ def main(
     Run the benchmarks for all estimators specified in the configuration file.
     """
 
+    # Store bench libs versions
+    versions = {}
+    for lib in BENCH_LIBS:
+        versions[lib] = version(lib)
+    with open(VERSIONS_PATH, "w") as outfile:
+        json.dump(versions, outfile)
+
+    # Store bench environment information
+    environment_information = {}
+    environment_information["system"] = _get_sys_info()
+    environment_information["dependencies"] = _get_deps_info()
+    environment_information["threadpool"] = threadpool_info()
+    environment_information["cpu_count"] = joblib.cpu_count(only_physical_cores=True)
+    with open(ENV_INFO_PATH, "w") as outfile:
+        json.dump(environment_information, outfile)
+
+    # Store current time
+    with open(TIME_LAST_RUN_PATH, "w") as outfile:
+        outfile.write(datetime.now().strftime("%A %d %B, %Y at %H:%M:%S"))
+
     if not append:
         clean_results()
 
@@ -250,20 +270,6 @@ def main(
             future.result()
 
         cluster.scale(0)
-
-    # Store bench environment information
-    environment_information = {}
-    environment_information["system"] = _get_sys_info()
-    environment_information["dependencies"] = _get_deps_info()
-    environment_information["threadpool"] = threadpool_info()
-    environment_information["cpu_count"] = joblib.cpu_count(only_physical_cores=True)
-    with open(ENV_INFO_PATH, "w") as outfile:
-        json.dump(environment_information, outfile)
-
-    # Store current time
-    with open(TIME_LAST_RUN_PATH, "w") as outfile:
-        outfile.write(datetime.now().strftime("%A %d %B, %Y at %H:%M:%S"))
-
 
 if __name__ == "__main__":
     main()
