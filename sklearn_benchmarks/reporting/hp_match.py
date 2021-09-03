@@ -1,6 +1,7 @@
 import importlib
 import json
 import os
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -14,6 +15,7 @@ from sklearn_benchmarks.config import (
     COMPARABLE_COLS,
     DIFF_SCORES_THRESHOLDS,
     PLOT_HEIGHT_IN_PX,
+    RESULTS_PATH,
     VERSIONS_PATH,
     get_full_config,
 )
@@ -24,7 +26,7 @@ from sklearn_benchmarks.utils import (
 )
 
 
-def make_profiling_link(components, library=BASE_LIBRARY):
+def make_link_to_profiling_trace(components, library=BASE_LIBRARY):
     """
     Return an anchor tag pointing to a profiling HTML file result.
 
@@ -32,15 +34,21 @@ def make_profiling_link(components, library=BASE_LIBRARY):
     """
 
     function, parameters_digest, dataset_digest = components
-    path = f"profiling/{library}_{function}_{parameters_digest}_{dataset_digest}.html"
+    file = f"profiling/{library}_{function}_{parameters_digest}_{dataset_digest}.html"
 
     # When the env variable PUBLISHED_BASE_URL is not set, we assume that we are working locally and that a file server is running on port 8000 to serve static files.
     if os.environ.get("PUBLISHED_BASE_URL") is not None:
-        base_url = os.environ.get("PUBLISHED_BASE_URL")
+        results_path = published_base_url = Path(os.environ.get("PUBLISHED_BASE_URL"))
     else:
-        base_url = "http://localhost:8000/results/"
+        results_path = RESULTS_PATH
+        published_base_url = "http://localhost:8000/results/"
 
-    return f"<a href='{base_url}{path}' target='_blank'>See</a>"
+    if not (results_path / file).exists():
+        return ""
+
+    href = published_base_url / file
+
+    return f"<a href='{href}' target='_blank'>See</a>"
 
 
 def add_bar_to_barplot(
@@ -301,7 +309,7 @@ class SingleEstimatorHpMatchReporting:
         for lib in [BASE_LIBRARY, self.other_library]:
             df[f"{lib}_profiling"] = df[
                 ["function", "parameters_digest", "dataset_digest"]
-            ].apply(make_profiling_link, library=lib, axis=1)
+            ].apply(make_link_to_profiling_trace, library=lib, axis=1)
 
         df = df.drop(["parameters_digest", "dataset_digest"], axis=1)
 
