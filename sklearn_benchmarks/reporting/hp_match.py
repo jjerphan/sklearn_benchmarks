@@ -414,9 +414,17 @@ class SingleEstimatorHpMatchReporting:
             height=n_rows * PLOT_HEIGHT_IN_PX, barmode="group", showlegend=True
         )
 
+        y_min = 0.01
+        y_max = 105
+
         if self.log_scale:
-            for row, col in coordinates:
+            y_min = np.log(y_min)
+            y_max = np.log(y_max)
+
+        for row, col in coordinates:
+            if self.log_scale:
                 fig.update_yaxes(type="log", row=row, col=col)
+            fig.update_yaxes(range=[y_min, y_max])
 
         fig.update_xaxes(type="category")
 
