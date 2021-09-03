@@ -391,7 +391,7 @@ class SingleEstimatorHpMatchReporting:
         for i in range(1, n_plots + 1):  # All plots are flatten.
             fig["layout"]["xaxis{}".format(i)]["title"] = "(n_samples, n_features)"
 
-            y_title = "Speedup"
+            y_title = "Speedup over scikit-learn"
             if self.log_scale:
                 y_title += " in log scale"
             fig["layout"]["yaxis{}".format(i)]["title"] = y_title
