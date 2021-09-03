@@ -7,7 +7,7 @@ import joblib
 import numpy as np
 import onnxruntime as rt
 import pandas as pd
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_allclose
 from skl2onnx import convert_sklearn
 from skl2onnx.common.data_types import FloatTensorType
 from sklearn.model_selection import ParameterGrid, train_test_split
@@ -438,7 +438,7 @@ class Benchmark:
                             assert onnx_func_result.shape == func_result.shape
 
                             for score in scores.keys():
-                                assert_almost_equal(onnx_scores[score], scores[score])
+                                assert_allclose(onnx_scores[score], scores[score])
 
                         benchmark_result = RawBenchmarkResult(
                             self.name,
