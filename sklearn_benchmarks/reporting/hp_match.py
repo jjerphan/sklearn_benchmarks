@@ -395,6 +395,12 @@ class SingleEstimatorHpMatchReporting:
                     df,
                 )
 
+        fig.add_hline(
+            y=1.0,
+            line_dash="dot",
+            fillcolor="grey",
+        )
+
         # Set axis titles for each plot.
         for i in range(1, n_plots + 1):  # All plots are flatten.
             fig["layout"]["xaxis{}".format(i)]["title"] = "(n_samples, n_features)"
