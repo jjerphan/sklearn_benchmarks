@@ -598,12 +598,6 @@ hp_match_reporting:
         split_bars_by_parameters:
           - n_jobs
 
-      KNeighborsClassifier_kd_tree:
-        name: KNeighborsClassifier_kd_tree
-        other_library: onnx
-        split_bars_by_parameters:
-          - n_jobs
-
       HistGradientBoostingClassifier_best:
         name: HistGradientBoostingClassifier_best
         other_library: onnx
