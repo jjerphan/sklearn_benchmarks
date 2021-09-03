@@ -185,8 +185,10 @@ class HPOReporting:
     Class responsible for running a HPO reporting for estimators specified in the configuration file.
     """
 
-    def __init__(self, config=None):
-        self.config = config
+    def __init__(self, config_file=None):
+        self.config_file = config_file
+        config = get_full_config(config=self.config_file)
+        self.config = config["hpo_reporting"]
 
     def set_versions(self):
         with open(VERSIONS_PATH) as json_file:
@@ -495,9 +497,6 @@ class HPOReporting:
         fig.show()
 
     def make_report(self):
-        config = get_full_config(config=self.config)
-        self.config = config["hpo_reporting"]
-
         self.set_versions()
 
         self.prepare_data()
@@ -520,10 +519,9 @@ class HPOReporting:
             "The fastest libraries are therefore the closest to the upper left corner."
         )
 
-        # If we are in production env, we add a link to the configuration file hosted on Github.
-        if os.environ.get("PUBLISHED_BASE_URL") is not None:
-            link_configuration_file = make_link_to_config_file(self.config)
-            description += f" The specification of the HP grid can be found in the [configuration file]({link_configuration_file})."
+        # Add a link to the configuration file hosted on Github.
+        link_configuration_file = make_link_to_config_file(self.config_file)
+        description += f" The specification of the HP grid can be found in the [configuration file]({link_configuration_file})."
 
         display(Markdown(f"> {description}"))
         self.smoothed_curves()

@@ -70,6 +70,8 @@ SLURM_ENV_EXTRA = [
     "conda activate sklbench",
 ]
 
+GITHUB_BASE_URL = "https://github.com/mbatoul/sklearn_benchmarks/"
+
 
 def get_full_config(config=DEFAULT_CONFIG):
     with open(config, "r") as config_file:
