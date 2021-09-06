@@ -375,11 +375,14 @@ class Benchmark:
                     for i in range(len(n_samples_test)):
                         ns_test = n_samples_test[i]
                         X_test_, y_test_ = X_test[:ns_test], y_test[:ns_test]
-                        bench_func = estimator.predict
+
+                        # NOTE: explicitly indicating the benchmarked function name here
+                        bench_func = estimator.kneighbors
+                        function_name = 'kneighbors'
 
                         if self.predict_with_onnx:
                             onnx_profiling_path = result_path_maker.profiling_path(
-                                bench_func.__name__,
+                                function_name,
                                 library="onnx",
                             )
 
@@ -404,7 +407,7 @@ class Benchmark:
                             onnx_benchmark_result = RawBenchmarkResult(
                                 self.name,
                                 "onnx",
-                                bench_func.__name__,
+                                function_name,
                                 ns_train,
                                 ns_test,
                                 n_features,
@@ -421,7 +424,7 @@ class Benchmark:
                         func_result, benchmark_measurements = run_benchmark_one_func(
                             bench_func,
                             estimator,
-                            result_path_maker.profiling_path(bench_func.__name__),
+                            result_path_maker.profiling_path(function_name),
                             X_test_,
                             n_executions=n_executions,
                             run_profiling=self.run_profiling,
@@ -442,7 +445,7 @@ class Benchmark:
                         benchmark_result = RawBenchmarkResult(
                             self.name,
                             library,
-                            bench_func.__name__,
+                            function_name,
                             ns_train,
                             ns_test,
                             n_features,

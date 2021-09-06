@@ -179,7 +179,7 @@ class SingleEstimatorHpMatchReporting:
         other_library="",
         split_bars_by_parameters=[],
         estimator_parameters={},
-        relevant_functions=["fit", "predict"],
+        relevant_functions=["fit", "kneighbors"],
         n_cols=None,
         log_scale=False,
     ):
@@ -471,7 +471,7 @@ class SingleEstimatorHpMatchReporting:
             diff_scores = np.absolute(base_library_scores - other_library_scores)
 
             df_filtered.insert(2 + index, f"diff_{score}s", diff_scores)
-            df_filtered = df_filtered.query("function == 'predict'")
+            df_filtered = df_filtered.query("function == 'kneighbors'")
 
             threshold = DIFF_SCORES_THRESHOLDS[score]
 
@@ -481,7 +481,7 @@ class SingleEstimatorHpMatchReporting:
 
         if not df_filtered.empty:
             n_mismatches = len(df_filtered)
-            n_total_predictions = len(self.df_reporting.query("function == 'predict'"))
+            n_total_predictions = len(self.df_reporting.query("function == 'kneighbors'"))
 
             proportion_mismatches = n_mismatches / n_total_predictions * 100
             proportion_mismatches = round(proportion_mismatches, 2)

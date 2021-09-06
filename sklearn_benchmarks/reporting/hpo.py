@@ -140,7 +140,7 @@ def add_points_to_scatter(
     color,
     legendgroup,
     duration_suffix="fit",
-    score_suffix="predict",
+    score_suffix="kneighbors",
 ):
     mean_duration_column = f"mean_duration_{duration_suffix}"
     score_column = f"accuracy_score_{score_suffix}"
@@ -219,7 +219,7 @@ class HPOReporting:
             color = params["color"]
 
             fit_times = df.query("function == 'fit'")["mean_duration"]
-            scores = df.query("function == 'predict'")["accuracy_score"]
+            scores = df.query("function == 'kneighbors'")["accuracy_score"]
 
             # The best score of the worst performing library is the minimum of maximum scores.
             best_score_worst_performer = min(best_score_worst_performer, scores.max())
@@ -289,7 +289,7 @@ class HPOReporting:
 
         for index, benchmark_result in enumerate(self.benchmark_results):
             df = benchmark_result.df
-            df_predictions = df.query("function == 'predict'")
+            df_predictions = df.query("function == 'kneighbors'")
 
             comparable_columns = [col for col in COMPARABLE_COLS if col in df.columns]
             merged_columns = [
@@ -314,7 +314,7 @@ class HPOReporting:
                 df.query("function == 'fit'")[merged_columns],
                 on=["parameters_digest", "dataset_digest"],
                 how="inner",
-                suffixes=["_predict", "_fit"],
+                suffixes=["_kneighbors", "_fit"],
             )
 
             df_merged = df_merged.drop(
@@ -332,11 +332,11 @@ class HPOReporting:
                 benchmark_result.color,
                 index,
                 duration_suffix=func,
-                score_suffix="predict",
+                score_suffix="kneighbors",
             )
 
             # For scikit-learn, we repeat the process to add ONNX prediction results
-            if func == "predict" and benchmark_result.lib == BASE_LIBRARY:
+            if func == "kneighbors" and benchmark_result.lib == BASE_LIBRARY:
                 add_points_to_scatter(
                     fig,
                     df_merged,
@@ -534,6 +534,6 @@ class HPOReporting:
         display(Markdown("### Speedup curves"))
         self.speedup_curves()
 
-        display(Markdown("## Benchmark results for `predict`"))
-        display(Markdown("### Raw predict times vs. validation scores"))
-        self.scatter(func="predict")
+        display(Markdown("## Benchmark results for `kneighbors`"))
+        display(Markdown("### Raw kneighbors times vs. validation scores"))
+        self.scatter(func="kneighbors")

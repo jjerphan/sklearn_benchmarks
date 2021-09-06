@@ -32,8 +32,7 @@ benchmarking:
             - brute
           n_jobs:
             - -1
-      metrics:
-        - accuracy_score
+      metrics: []
       datasets:
         - sample_generator: sklearn.datasets.make_classification
           params:
@@ -115,7 +114,7 @@ hp_match_reporting:
   onnx:
     n_cols: 2
     relevant_functions:
-      - predict
+      - kneighbors
     estimators:
       KNeighborsClassifier_brute_force:
         name: KNeighborsClassifier_brute_force
