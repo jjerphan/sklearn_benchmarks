@@ -311,7 +311,7 @@ def load_libraries_version(version_file: pathlib.PosixPath = VERSIONS_PATH) -> d
 
     Returns a default dict of 'unkwown' values in case of missing keys.
     """
-    versions = defaultdict(default_factory=lambda: 'unkwown')
+    versions = defaultdict(lambda: 'unkwown')
     try:
         with open(version_file, "r") as json_dump:
             versions.update(json.load(json_dump))
