@@ -414,8 +414,8 @@ class SingleEstimatorHpMatchReporting:
             height=n_rows * PLOT_HEIGHT_IN_PX, barmode="group", showlegend=True
         )
 
-        y_min = 0.01
-        y_max = 105
+        y_min = 0.1
+        y_max = 10.5
 
         if self.log_scale:
             y_min = np.log(y_min)
