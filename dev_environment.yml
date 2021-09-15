@@ -1,0 +1,25 @@
+name: sklbench_dev
+channels:
+  - conda-forge
+dependencies:
+  - black
+  - autoflake
+  - numpy
+  - pandas
+  - plotly
+  - ipython
+  - click
+  - joblib
+  - scikit-learn
+  - threadpoolctl
+  - onnxruntime
+  - skl2onnx
+  - viztracer
+  - pyyaml
+  - jupyter
+  - dask
+  - dask-jobqueue
+  - xgboost
+  - lightgbm
+  - catboost
+  - scikit-learn-intelex
