@@ -5,10 +5,6 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 requirements = []
-with open("environment.yml", "r") as f:
-    environment = yaml.load(f)
-    for elem in environment["dependencies"]:
-        requirements.append(elem)
 
 setup(
     name="sklearn_benchmarks",
